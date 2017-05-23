@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.org/banco_obras"
+	xmlns:tns="http://www.example.org/banco_obras" elementFormDefault="qualified"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<!-- Definição dos Tipos simples -->
+	<simpleType name="st_primaryKey">
+		<restriction base="long">
+			<minInclusive value="1" />
+		</restriction>
+	</simpleType>
+
+	<simpleType name="st_numeroSalao">
+		<restriction base="int">
+			<minInclusive value="1" />
+		</restriction>
+	</simpleType>
+
+	<simpleType name="st_andarSalao">
+		<restriction base="int">
+			<minInclusive value="1" />
+		</restriction>
+	</simpleType>
+
+	<simpleType name="st_Salario">
+		<xs:restriction base="float">
+			<xs:minInclusive value="937.00" />
+		</xs:restriction>
+	</simpleType>
+
+	<simpleType name="st_qtQuantidade">
+		<xs:restriction base="integer">
+			<xs:minInclusive value="0" />
+		</xs:restriction>
+	</simpleType>
+
+	<simpleType name="st_Custo">
+		<xs:restriction base="float">
+			<xs:minInclusive value="1" />
+		</xs:restriction>
+	</simpleType>
+
+	<simpleType name="st_AnoObra">
+		<xs:restriction base="gYear">
+			<xs:maxInclusive value="2017" />
+		</xs:restriction>
+	</simpleType>
+
+
+
+	<!-- Tipos complexos -->
+	<complexType name="ct_Nacionalidade">
+		<sequence>
+			<element name="id" type="tns:st_primaryKey" />
+			<element name="descricao" type="string" />
+		</sequence>
+	</complexType>
+
+	<complexType name="ct_Autor">
+		<sequence>
+			<element name="codigo" type="tns:st_primaryKey" />
+			<element name="nome" type="string" nillable="false" />
+			<element name="nacionalidade" type="tns:ct_Nacionalidade"
+				nillable="false" />
+		</sequence>
+	</complexType>
+
+	<complexType name="ct_Restaurador">
+		<sequence>
+			<element name="id" type="tns:st_primaryKey" />
+			<element name="cpf" type="string" nillable="false" />
+			<element name="nome" type="string" nillable="false" />
+			<element name="salario" type="tns:st_Salario" />
+		</sequence>
+	</complexType>
+
+	<complexType name="ct_MateriaPrima">
+		<sequence>
+			<element name="codigo" type="tns:st_primaryKey" />
+			<element name="nome" type="string" nillable="false" />
+			<element name="quantidade" type="tns:st_qtQuantidade"
+				nillable="false" />
+		</sequence>
+	</complexType>
+
+	<complexType name="ct_Manutencao">
+		<sequence>
+			<element name="restaurador" type="tns:ct_Restaurador" />
+			<element name="materiaPrima" type="tns:ct_MateriaPrima"
+				minOccurs="0" maxOccurs="unbounded" />
+			<element name="dataInicio" type="date" nillable="false" />
+			<element name="custo" type="tns:st_Custo" />
+			<element name="descricao" type="string" />
+			<element name="dataTermino" nillable="false">
+				<simpleType>
+					<restriction base="date">
+					</restriction>
+				</simpleType>
+			</element>
+		</sequence>
+		<assert test="dataInicio lt dataTermino" />
+	</complexType>
+
+	<complexType name="ct_Estilo">
+		<sequence>
+			<element name="id" type="tns:st_primaryKey" />
+			<element name="descricao" type="string" />
+		</sequence>
+	</complexType>
+
+	<complexType name="ct_Pintura">
+		<sequence>
+			<element name="area" type="float" nillable="false" />
+			<element name="estilos" type="tns:ct_Estilo" minOccurs="0"
+				maxOccurs="unbounded" />
+		</sequence>
+	</complexType>
+
+	<complexType name="ct_Escultura">
+		<sequence>
+			<element name="peso" type="float" nillable="false" />
+		</sequence>
+	</complexType>
+
+	<complexType name="ct_Salao">
+		<sequence>
+			<element name="numero" type="tns:st_numeroSalao" nillable="false" />
+			<element name="andar" type="tns:st_andarSalao" nillable="false" />
+		</sequence>
+	</complexType>
+
+	<complexType name="ct_exposicao">
+		<sequence>
+			<element name="salao" type="tns:ct_Salao" nillable="false" />
+		</sequence>
+	</complexType>
+
+	<complexType name="ct_Obra">
+		<sequence>
+			<element name="codigo" type="tns:st_primaryKey" nillable="false" />
+			<element name="ano" type="tns:st_AnoObra" nillable="false" />
+			<element name="titulo" type="string" nillable="false" />
+			<element name="exposicoes" type="tns:ct_Estilo" minOccurs="0"
+				maxOccurs="unbounded" />
+			<element name="escultura" type="tns:ct_Escultura" />
+			<element name="pintura" type="tns:ct_Pintura" />
+			<element name="autores" type="tns:ct_Autor" minOccurs="0"
+				maxOccurs="unbounded" />
+		</sequence>
+	</complexType>
+
+	<complexType name="bancoDeDados">
+		<element name="obras" type="tns:ct_Obra" minOccurs="0"
+			maxOccurs="unbounded" />
+	</complexType>
+
+
+
+</schema>
